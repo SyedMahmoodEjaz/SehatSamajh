@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SehatSamajh — Kiosk Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1E2A26;
+    --ink-soft:#4C5A55;
+    --paper:#FBF8F2;
+    --panel:#F1EBDD;
+    --teal:#184D45;
+    --teal-deep:#0F332D;
+    --sage:#DCE6D8;
+    --gold:#C98A3E;
+    --clay:#B0503C;
+    --ok:#3E7A4F;
+    --warn:#B0503C;
+    --line: rgba(30,42,38,0.14);
+    --radius: 22px;
+    --bezel:#0B1F1B;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#12201C; --panel:#1B2E28; --ink:#EFEAE0; --ink-soft:#B7C4BE;
+      --line: rgba(239,234,224,0.14); --sage:#22352D;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#12201C; --panel:#1B2E28; --ink:#EFEAE0; --ink-soft:#B7C4BE;
+    --line: rgba(239,234,224,0.14); --sage:#22352D;
+  }
+  html{height:100%; scroll-padding-top: env(safe-area-inset-top, 0px);}
+  *{box-sizing:border-box;}
+  body{
+    height:100%; margin:0; background:var(--sage); color:var(--ink);
+    font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center;
+    padding:28px 14px;
+  }
+  .urdu{ font-family:'Noto Nastaliq Urdu','Inter',sans-serif; }
+
+  .stage{ width:min(430px,100%); }
+  .device{
+    background:var(--bezel); border-radius:38px; padding:14px 14px 22px;
+    box-shadow: 0 30px 60px rgba(11,31,27,0.35), 0 2px 0 rgba(255,255,255,0.04) inset;
+  }
+  .camdot{ width:8px; height:8px; border-radius:50%; background:#3A4F49; margin:6px auto 10px; }
+  .screen{
+    background:var(--paper); border-radius:24px; overflow:hidden; position:relative;
+    min-height:640px; display:flex; flex-direction:column;
+  }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 18px 4px; min-height:34px;
+  }
+  .backbtn{
+    border:none; background:none; color:var(--teal); font:600 15px/1 'Inter',sans-serif;
+    cursor:pointer; padding:8px 4px; display:flex; align-items:center; gap:6px;
+  }
+  .backbtn svg{width:16px;height:16px;}
+  .badge{
+    font-size:12px; color:var(--ink-soft); background:var(--panel); border-radius:999px;
+    padding:5px 12px; border:1px solid var(--line);
+  }
+  .content{ flex:1; padding:10px 22px 26px; display:flex; flex-direction:column; }
+  .footer-note{
+    font-size:11px; color:var(--ink-soft); text-align:center; padding:10px 20px 18px;
+    border-top:1px solid var(--line);
+  }
+
+  h1.hero{ font-family:'Fraunces',serif; font-weight:600; font-size:26px; line-height:1.25; margin:10px 0 2px; color:var(--teal-deep); }
+  .hero-urdu{ font-size:26px; margin:2px 0 14px; color:var(--teal-deep); }
+  p.lede{ color:var(--ink-soft); font-size:14.5px; line-height:1.55; margin:0 0 18px; }
+
+  .btn{
+    border:none; border-radius:16px; padding:16px 18px; font:600 15px/1.3 'Inter',sans-serif;
+    cursor:pointer; text-align:left; display:flex; align-items:center; gap:12px;
+  }
+  .btn-primary{ background:var(--teal); color:#F6F2E8; justify-content:center; font-size:16px; }
+  .btn-primary:active{ background:var(--teal-deep); }
+  .btn-ghost{
+    background:var(--panel); color:var(--ink); border:1px solid var(--line);
+  }
+  .btn-ghost:active{ background:var(--sage); }
+
+  .icon-badge{
+    width:38px; height:38px; border-radius:11px; background:var(--sage); color:var(--teal);
+    display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .icon-badge svg{ width:19px; height:19px; }
+
+  .stack{ display:flex; flex-direction:column; gap:12px; margin-top:auto; margin-bottom:6px; }
+  .center-mid{ flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:14px; }
+
+  .lang-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .lang-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:16px 10px;
+    text-align:center; cursor:pointer; font-weight:600;
+  }
+  .lang-card .native{ font-size:19px; display:block; margin-bottom:4px; }
+  .lang-card .rom{ font-size:11px; color:var(--ink-soft); font-weight:500; }
+  .lang-card:active{ background:var(--sage); }
+
+  .menu-card{
+    display:flex; align-items:center; gap:14px; background:var(--panel); border:1px solid var(--line);
+    border-radius:18px; padding:16px; cursor:pointer;
+  }
+  .menu-card:active{ background:var(--sage); }
+  .menu-card .t{ font-weight:700; font-size:15px; }
+  .menu-card .s{ font-size:12.5px; color:var(--ink-soft); margin-top:2px; }
+  .menu-card .icon-badge{ background:var(--teal); color:#F6F2E8; }
+
+  .chiprow{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+  .chip{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px 16px;
+    font-weight:600; font-size:14.5px; cursor:pointer;
+  }
+  .chip:active{ background:var(--sage); }
+
+  .mic-pulse{
+    width:96px; height:96px; border-radius:50%; background:var(--teal); color:#F6F2E8;
+    display:flex; align-items:center; justify-content:center; margin:0 auto;
+    box-shadow:0 0 0 10px rgba(24,77,69,0.12);
+  }
+  .mic-pulse svg{ width:38px; height:38px; }
+
+  .spin{
+    width:54px; height:54px; border-radius:50%; border:4px solid var(--sage);
+    border-top-color:var(--teal); animation:spin 0.9s linear infinite; margin:0 auto;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+
+  .result-card{
+    background:var(--teal); color:#F6F2E8; border-radius:20px; padding:22px; text-align:center;
+    margin-top:6px;
+  }
+  .result-card .dept{ font-family:'Fraunces',serif; font-size:24px; font-weight:600; margin:4px 0 10px;}
+  .result-row{ display:flex; justify-content:space-between; font-size:13.5px; padding:8px 0; border-top:1px solid rgba(246,242,232,0.18); }
+  .direction{ display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; font-size:13px; color:#E7E2D2; }
+  .direction svg{ width:16px; height:16px; }
+
+  .safety{
+    display:flex; gap:10px; background:var(--panel); border:1px dashed var(--line);
+    border-radius:14px; padding:12px 14px; font-size:12.5px; color:var(--ink-soft); margin-top:14px;
+  }
+
+  .lab-line{
+    display:flex; justify-content:space-between; align-items:center; padding:13px 0; border-bottom:1px solid var(--line);
+  }
+  .lab-line:last-child{ border-bottom:none; }
+  .lab-line .name{ font-weight:600; font-size:14px; }
+  .lab-line .val{ font-size:13px; color:var(--ink-soft); }
+  .tag{ font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; }
+  .tag-ok{ background:rgba(62,122,79,0.15); color:var(--ok); }
+  .tag-watch{ background:rgba(176,80,60,0.15); color:var(--warn); }
+  .explain{ font-size:13px; color:var(--ink-soft); line-height:1.5; margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }
+
+  .med-card{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:12px; }
+  .med-card .name{ font-family:'Fraunces',serif; font-weight:600; font-size:17px; color:var(--teal-deep); }
+  .med-card .row{ font-size:13px; margin-top:8px; color:var(--ink-soft); }
+  .med-card .row b{ color:var(--ink); font-weight:600; }
+  .med-card .precaution{ margin-top:10px; background:rgba(176,80,60,0.1); color:var(--clay); border-radius:10px; padding:8px 10px; font-size:12.5px; font-weight:600; }
+
+  .homebtn-row{ display:flex; justify-content:center; margin-top:18px; }
+  .dot{ width:120px; height:5px; border-radius:99px; background:#31423C; }
+  .hidden{ display:none !important; }
+
+  /* Splash / intro animation */
+  #splash{
+    position:fixed; inset:0; z-index:999;
+    background:radial-gradient(circle at 50% 30%, var(--teal) 0%, var(--teal-deep) 70%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+    animation: splashOut 0.7s ease forwards; animation-delay:2.5s;
+  }
+  .splash-mark{
+    width:64px; height:64px; border-radius:18px; background:rgba(246,242,232,0.12);
+    display:flex; align-items:center; justify-content:center; margin-bottom:6px;
+    opacity:0; transform:scale(0.7); animation: splashPop 0.7s cubic-bezier(.2,.8,.2,1) forwards; animation-delay:0.05s;
+  }
+  .splash-mark svg{ width:30px; height:30px; color:#F6F2E8; }
+  .splash-name{
+    font-family:'Fraunces',serif; font-weight:700; font-size:36px; color:#F6F2E8;
+    letter-spacing:0.3px; opacity:0; transform:translateY(14px);
+    animation: splashIn 0.8s cubic-bezier(.2,.8,.2,1) forwards; animation-delay:0.25s;
+  }
+  .splash-urdu{
+    font-family:'Noto Nastaliq Urdu','Inter',sans-serif; font-size:21px; color:#DCE6D8;
+    opacity:0; animation: splashIn 0.8s ease forwards; animation-delay:0.7s;
+  }
+  .splash-tag{
+    font-size:11.5px; color:#B7C4BE; letter-spacing:3px; text-transform:uppercase; margin-top:4px;
+    opacity:0; animation: splashIn 0.7s ease forwards; animation-delay:1.05s;
+  }
+  .splash-dots{ display:flex; gap:6px; margin-top:16px; opacity:0; animation: splashIn 0.5s ease forwards; animation-delay:1.35s; }
+  .splash-dots span{ width:6px; height:6px; border-radius:50%; background:var(--gold); animation: dotBeat 1.1s ease-in-out infinite; }
+  .splash-dots span:nth-child(2){ animation-delay:0.15s; }
+  .splash-dots span:nth-child(3){ animation-delay:0.3s; }
+
+  @keyframes splashPop{ to{ opacity:1; transform:scale(1);} }
+  @keyframes splashIn{ to{ opacity:1; transform:translateY(0);} }
+  @keyframes dotBeat{ 0%,100%{ transform:scale(1); opacity:.6;} 50%{ transform:scale(1.5); opacity:1;} }
+  @keyframes splashOut{ to{ opacity:0; visibility:hidden; pointer-events:none; } }
+
+  .stage{ opacity:0; animation: stageIn 0.6s ease forwards; animation-delay:2.6s; }
+  @keyframes stageIn{ to{ opacity:1; } }
+</style>
+</head>
+<body>
+<div id="splash" aria-hidden="true">
+  <div class="splash-mark">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>
+  </div>
+  <div class="splash-name">SehatSamajh</div>
+  <div class="splash-urdu urdu">صحت سمجھ</div>
+  <div class="splash-tag">Hospital Kiosk</div>
+  <div class="splash-dots"><span></span><span></span><span></span></div>
+</div>
+<div class="stage">
+  <div class="device">
+    <div class="camdot"></div>
+    <div class="screen" id="screen"></div>
+    <div class="homebtn-row"><div class="dot"></div></div>
+  </div>
+</div>
+
+<script>
+const ICONS = {
+  back: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`,
+  mic: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg>`,
+  report: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M9 13h8M9 17h8M9 9h3"/></svg>`,
+  rx: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22 19 8M9 22l-4-4M2 15l4 4M14 2l8 8-3 3-8-8z"/></svg>`,
+  pin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>`,
+  cam: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="14" r="3.5"/></svg>`
+};
+
+const DEPTS = {
+  fever:{ label:'Fever, headache & body ache', dept:'General Medicine', deptUrdu:'جنرل میڈیسن', counter:'4', floor:'Ground Floor', urgent:false },
+  chest:{ label:'Chest pain / shortness of breath', dept:'Cardiology', deptUrdu:'امراض قلب', counter:'9', floor:'2nd Floor', urgent:true },
+  stomach:{ label:'Stomach ache & vomiting', dept:'Gastroenterology', deptUrdu:'معدہ و انتڑیاں', counter:'6', floor:'Ground Floor', urgent:false },
+  skin:{ label:'Skin rash / itching', dept:'Dermatology', deptUrdu:'جلدی امراض', counter:'12', floor:'3rd Floor', urgent:false },
+  preg:{ label:'Pregnancy checkup', dept:'Gynecology & Obstetrics', deptUrdu:'امراض نسواں', counter:'3', floor:'1st Floor', urgent:false }
+};
+
+const REPORTS = {
+  cbc:{ title:'Complete Blood Count (CBC)', lines:[
+      {name:'Hemoglobin', val:'10.8 g/dL', tag:'watch'},
+      {name:'White Blood Cells', val:'7,200 /µL', tag:'ok'},
+      {name:'Platelets', val:'2.4 lakh /µL', tag:'ok'}],
+    explain:'Your hemoglobin is a little lower than normal — this can mean mild anemia, which is common and often improves with iron-rich food or supplements. Your other blood values are within the normal range. Please share this with your doctor at the counter shown.' },
+  sugar:{ title:'Blood Sugar (Fasting)', lines:[
+      {name:'Fasting Glucose', val:'118 mg/dL', tag:'watch'}],
+    explain:'Your fasting sugar is slightly above the usual range. It is not very high, but it is worth discussing with a doctor, especially if this has happened before. Try to avoid sugary food before your appointment.' },
+  xray:{ title:'Chest X-Ray Report', lines:[
+      {name:'Lung Fields', val:'Clear', tag:'ok'},
+      {name:'Heart Size', val:'Normal', tag:'ok'}],
+    explain:'The written report describes your lungs and heart shadow as normal in size and appearance. This is a simple reading of the report\'s own text — only your doctor can confirm what it means for you.' }
+};
+
+const RX = {
+  fever:[
+    {name:'Panadol (Paracetamol) 500mg', purpose:'Reduces fever and body pain', dose:'1 tablet every 6 hours, after food', caution:'Do not take more than 4 tablets in a day. Avoid alcohol.'},
+    {name:'Augmentin (Amoxicillin) 625mg', purpose:'Antibiotic for bacterial infection', dose:'1 tablet twice a day, for 5 days', caution:'Finish the full course even if you feel better sooner.'}
+  ],
+  stomach:[
+    {name:'Omeprazole 20mg', purpose:'Reduces stomach acid', dose:'1 capsule before breakfast, daily', caution:'Take on an empty stomach. Do not use long-term without a doctor\'s advice.'}
+  ]
+};
+
+let state = { screen:'home', symptomKey:null, reportKey:null, rxKey:'fever' };
+
+function go(screen){ state.screen = screen; render(); }
+
+function topbar(showBack){
+  return `<div class="topbar">
+    ${showBack ? `<button class="backbtn" onclick="history.back && goBack()">${ICONS.back} Back</button>` : `<span></span>`}
+    <span class="badge urdu">اردو / EN</span>
+  </div>`;
+}
+const backMap = { language:'home', menu:'language', 'symptom-pick':'menu', 'symptom-processing':'symptom-pick', 'department-result':'symptom-pick',
+  'lab-pick':'menu', 'lab-processing':'lab-pick', 'lab-result':'lab-pick', 'rx-pick':'menu', 'rx-processing':'rx-pick', 'rx-result':'rx-pick' };
+function goBack(){ go(backMap[state.screen] || 'home'); }
+
+function render(){
+  const el = document.getElementById('screen');
+  el.innerHTML = SCREENS[state.screen]();
+}
+
+const SCREENS = {
+  home: () => `
+    ${topbar(false)}
+    <div class="content center-mid">
+      <div class="icon-badge" style="width:64px;height:64px;border-radius:18px;">${ICONS.pin}</div>
+      <div>
+        <h1 class="hero">Welcome to SehatSamajh</h1>
+        <div class="hero-urdu urdu">خوش آمدید</div>
+        <p class="lede">A hospital helper kiosk. It listens, reads, and explains — in your language.</p>
+      </div>
+      <button class="btn btn-primary" style="width:100%;" onclick="go('language')">Tap to begin · شروع کریں</button>
+    </div>
+    <div class="footer-note">Jinnah Hospital · SehatSamajh Kiosk · No app or internet needed</div>
+  `,
+  language: () => `
+    ${topbar(true)}
+    <div class="content">
+      <h1 class="hero" style="font-size:21px;">Choose your language</h1>
+      <p class="lede">اپنی زبان منتخب کریں</p>
+      <div class="lang-grid">
+        <div class="lang-card" onclick="go('menu')"><span class="native urdu">اردو</span><span class="rom">Urdu</span></div>
+        <div class="lang-card" onclick="go('menu')"><span class="native">English</span><span class="rom">English</span></div>
+        <div class="lang-card" onclick="go('menu')"><span class="native urdu">پنجابی</span><span class="rom">Punjabi</span></div>
+        <div class="lang-card" onclick="go('menu')"><span class="native urdu">سندھی</span><span class="rom">Sindhi</span></div>
+        <div class="lang-card" onclick="go('menu')"><span class="native urdu">پشتو</span><span class="rom">Pashto</span></div>
+      </div>
+    </div>
+  `,
+  menu: () => `
+    ${topbar(true)}
+    <div class="content">
+      <h1 class="hero" style="font-size:21px;">How can we help?</h1>
+      <p class="lede">آپ کی کیا مدد کریں؟</p>
+      <div class="chiprow" style="gap:12px;">
+        <div class="menu-card" onclick="go('symptom-pick')">
+          <div class="icon-badge">${ICONS.mic}</div>
+          <div><div class="t">Where should I go?</div><div class="s">Tell us your symptoms · کہاں جانا ہے؟</div></div>
+        </div>
+        <div class="menu-card" onclick="go('lab-pick')">
+          <div class="icon-badge">${ICONS.report}</div>
+          <div><div class="t">Explain my lab report</div><div class="s">Scan your test report · رپورٹ سمجھیں</div></div>
+        </div>
+        <div class="menu-card" onclick="go('rx-pick')">
+          <div class="icon-badge">${ICONS.rx}</div>
+          <div><div class="t">Explain my prescription</div><div class="s">Scan your doctor's note · نسخہ سمجھیں</div></div>
+        </div>
+      </div>
+    </div>
+  `,
+  'symptom-pick': () => `
+    ${topbar(true)}
+    <div class="content">
+      <div class="mic-pulse">${ICONS.mic}</div>
+      <p class="lede" style="text-align:center;margin-top:14px;">Tap the mic and tell us what's wrong — or choose below</p>
+      <div class="chiprow">
+        ${Object.entries(DEPTS).map(([k,v])=>`<div class="chip" onclick="pickSymptom('${k}')">${v.label}</div>`).join('')}
+      </div>
+    </div>
+  `,
+  'symptom-processing': () => `
+    ${topbar(false)}
+    <div class="content center-mid">
+      <div class="spin"></div>
+      <p class="lede">Understanding your symptoms…</p>
+    </div>
+  `,
+  'department-result': () => {
+    const d = DEPTS[state.symptomKey];
+    return `
+    ${topbar(true)}
+    <div class="content">
+      <p class="lede" style="margin-bottom:6px;">You should go to</p>
+      <div class="result-card">
+        ${d.urgent ? `<div class="badge" style="background:rgba(246,242,232,0.16);color:#F6F2E8;border:none;">Please go promptly</div>` : ''}
+        <div class="dept">${d.dept}</div>
+        <div class="urdu" style="font-size:16px;opacity:.9;">${d.deptUrdu}</div>
+        <div class="result-row"><span>Counter</span><span>${d.counter}</span></div>
+        <div class="result-row"><span>Location</span><span>${d.floor}</span></div>
+        <div class="direction">${ICONS.pin} Follow the ${d.floor} signs from the main lobby</div>
+      </div>
+      <div class="safety">${ICONS.pin} This kiosk only guides you to the right counter. It does not diagnose your condition — a doctor will do that.</div>
+      <div class="stack"><button class="btn btn-ghost" onclick="go('menu')">Done · Back to menu</button></div>
+    </div>`;
+  },
+  'lab-pick': () => `
+    ${topbar(true)}
+    <div class="content">
+      <div class="icon-badge" style="width:64px;height:64px;border-radius:18px;margin:0 auto;">${ICONS.cam}</div>
+      <p class="lede" style="text-align:center;margin-top:14px;">Scan your report, or try a sample below</p>
+      <div class="chiprow">
+        ${Object.entries(REPORTS).map(([k,v])=>`<div class="chip" onclick="pickReport('${k}')">${v.title}</div>`).join('')}
+      </div>
+    </div>
+  `,
+  'lab-processing': () => `
+    ${topbar(false)}
+    <div class="content center-mid">
+      <div class="spin"></div>
+      <p class="lede">Reading your report…</p>
+    </div>
+  `,
+  'lab-result': () => {
+    const r = REPORTS[state.reportKey];
+    return `
+    ${topbar(true)}
+    <div class="content">
+      <h1 class="hero" style="font-size:19px;">${r.title}</h1>
+      <div style="margin-top:6px;">
+        ${r.lines.map(l=>`<div class="lab-line"><span class="name">${l.name}</span><span class="val">${l.val} <span class="tag ${l.tag==='ok'?'tag-ok':'tag-watch'}">${l.tag==='ok'?'Normal':'Check'}</span></span></div>`).join('')}
+      </div>
+      <p class="explain">${r.explain}</p>
+      <div class="stack"><button class="btn btn-primary" onclick="go('menu')">Done · Back to menu</button></div>
+    </div>`;
+  },
+  'rx-pick': () => `
+    ${topbar(true)}
+    <div class="content">
+      <div class="icon-badge" style="width:64px;height:64px;border-radius:18px;margin:0 auto;">${ICONS.cam}</div>
+      <p class="lede" style="text-align:center;margin-top:14px;">Scan your prescription, or try a sample below</p>
+      <div class="chiprow">
+        <div class="chip" onclick="pickRx('fever')">Sample: Fever prescription</div>
+        <div class="chip" onclick="pickRx('stomach')">Sample: Stomach prescription</div>
+      </div>
+    </div>
+  `,
+  'rx-processing': () => `
+    ${topbar(false)}
+    <div class="content center-mid">
+      <div class="spin"></div>
+      <p class="lede">Reading the doctor's handwriting…</p>
+    </div>
+  `,
+  'rx-result': () => {
+    const meds = RX[state.rxKey];
+    return `
+    ${topbar(true)}
+    <div class="content">
+      <h1 class="hero" style="font-size:19px;">Your medicines, explained</h1>
+      <div style="margin-top:8px;">
+        ${meds.map(m=>`
+          <div class="med-card">
+            <div class="name">${m.name}</div>
+            <div class="row"><b>What it's for:</b> ${m.purpose}</div>
+            <div class="row"><b>How to take it:</b> ${m.dose}</div>
+            <div class="precaution">⚠ ${m.caution}</div>
+          </div>`).join('')}
+      </div>
+      <div class="stack"><button class="btn btn-primary" onclick="go('menu')">Done · Back to menu</button></div>
+    </div>`;
+  }
+};
+
+function pickSymptom(key){ state.symptomKey = key; go('symptom-processing'); setTimeout(()=>go('department-result'), 1400); }
+function pickReport(key){ state.reportKey = key; go('lab-processing'); setTimeout(()=>go('lab-result'), 1400); }
+function pickRx(key){ state.rxKey = key; go('rx-processing'); setTimeout(()=>go('rx-result'), 1400); }
+
+render();
+
+// Remove the splash screen from the DOM once its fade-out finishes
+setTimeout(function(){
+  const s = document.getElementById('splash');
+  if (s) s.remove();
+}, 3300);
+</script>
+</body>
+</html>
