@@ -23,6 +23,11 @@
     --line: rgba(30,42,38,0.14);
     --radius: 22px;
     --bezel:#0B1F1B;
+    --teal-grad-end:#0F332D;
+    --bg-grad:
+      radial-gradient(1100px 750px at 12% -8%, rgba(201,138,62,0.30), transparent 58%),
+      radial-gradient(950px 700px at 108% 112%, rgba(24,77,69,0.30), transparent 55%),
+      linear-gradient(160deg, #FCEFDD 0%, #F3DFC0 28%, #E4E8D2 55%, #CCE6DC 78%, #BEE1D8 100%);
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
@@ -30,16 +35,26 @@
     :root:not([data-theme="light"]){
       --paper:#12201C; --panel:#1B2E28; --ink:#EFEAE0; --ink-soft:#B7C4BE;
       --line: rgba(239,234,224,0.14); --sage:#22352D;
+      --teal:#3FBBA3; --teal-deep:#7FEAD3; --teal-grad-end:#0B211C;
+      --bg-grad:
+        radial-gradient(1100px 750px at 12% -8%, rgba(201,138,62,0.20), transparent 60%),
+        radial-gradient(950px 700px at 108% 112%, rgba(63,187,163,0.22), transparent 55%),
+        linear-gradient(160deg, #0A1712 0%, #0E1F19 32%, #12251F 58%, #172C25 80%, #1B2E28 100%);
     }
   }
   :root[data-theme="dark"]{
     --paper:#12201C; --panel:#1B2E28; --ink:#EFEAE0; --ink-soft:#B7C4BE;
     --line: rgba(239,234,224,0.14); --sage:#22352D;
+    --teal:#3FBBA3; --teal-deep:#7FEAD3; --teal-grad-end:#0B211C;
+    --bg-grad:
+      radial-gradient(1100px 750px at 12% -8%, rgba(201,138,62,0.20), transparent 60%),
+      radial-gradient(950px 700px at 108% 112%, rgba(63,187,163,0.22), transparent 55%),
+      linear-gradient(160deg, #0A1712 0%, #0E1F19 32%, #12251F 58%, #172C25 80%, #1B2E28 100%);
   }
   html{height:100%; scroll-padding-top: env(safe-area-inset-top, 0px);}
   *{box-sizing:border-box;}
   body{
-    height:100%; margin:0; background:var(--sage); color:var(--ink);
+    height:100%; margin:0; background:var(--bg-grad); color:var(--ink);
     font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center;
     padding:28px 14px;
   }
@@ -82,7 +97,7 @@
     border:none; border-radius:16px; padding:16px 18px; font:600 15px/1.3 'Inter',sans-serif;
     cursor:pointer; text-align:left; display:flex; align-items:center; gap:12px;
   }
-  .btn-primary{ background:var(--teal); color:#F6F2E8; justify-content:center; font-size:16px; }
+  .btn-primary{ background:linear-gradient(135deg, var(--teal), var(--teal-grad-end) 130%); color:#F6F2E8; justify-content:center; font-size:16px; box-shadow:0 8px 18px rgba(15,51,45,0.22); }
   .btn-primary:active{ background:var(--teal-deep); }
   .btn-ghost{
     background:var(--panel); color:var(--ink); border:1px solid var(--line);
@@ -114,7 +129,7 @@
   .menu-card:active{ background:var(--sage); }
   .menu-card .t{ font-weight:700; font-size:15px; }
   .menu-card .s{ font-size:12.5px; color:var(--ink-soft); margin-top:2px; }
-  .menu-card .icon-badge{ background:var(--teal); color:#F6F2E8; }
+  .menu-card .icon-badge{ background:linear-gradient(135deg, var(--teal), var(--teal-grad-end) 130%); color:#F6F2E8; }
 
   .chiprow{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
   .chip{
@@ -124,11 +139,25 @@
   .chip:active{ background:var(--sage); }
 
   .mic-pulse{
-    width:96px; height:96px; border-radius:50%; background:var(--teal); color:#F6F2E8;
+    width:96px; height:96px; border-radius:50%; background:linear-gradient(135deg, var(--teal), var(--teal-grad-end) 130%); color:#F6F2E8;
     display:flex; align-items:center; justify-content:center; margin:0 auto;
     box-shadow:0 0 0 10px rgba(24,77,69,0.12);
   }
   .mic-pulse svg{ width:38px; height:38px; }
+  .mic-pulse{ cursor:pointer; transition:box-shadow .3s ease; }
+  .mic-pulse.listening{ box-shadow:0 0 0 14px rgba(24,77,69,0.18); animation:micPulse 1s ease-in-out infinite; }
+  @keyframes micPulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.06);} }
+
+  .type-row{ display:flex; gap:8px; margin-top:16px; }
+  .type-input{
+    flex:1; border:1px solid var(--line); background:var(--panel); color:var(--ink);
+    border-radius:12px; padding:12px 14px; font:500 14px/1.3 'Inter',sans-serif; outline:none;
+  }
+  .type-input:focus{ border-color:var(--teal); }
+  .btn-type-go{
+    border:none; border-radius:12px; padding:0 18px; font:600 14px/1 'Inter',sans-serif;
+    background:linear-gradient(135deg, var(--teal), var(--teal-grad-end) 130%); color:#F6F2E8; cursor:pointer;
+  }
 
   .spin{
     width:54px; height:54px; border-radius:50%; border:4px solid var(--sage);
@@ -137,7 +166,7 @@
   @keyframes spin{ to{ transform:rotate(360deg);} }
 
   .result-card{
-    background:var(--teal); color:#F6F2E8; border-radius:20px; padding:22px; text-align:center;
+    background:linear-gradient(150deg, var(--teal), var(--teal-grad-end) 140%); color:#F6F2E8; border-radius:20px; padding:22px; text-align:center;
     margin-top:6px;
   }
   .result-card .dept{ font-family:'Fraunces',serif; font-size:24px; font-weight:600; margin:4px 0 10px;}
@@ -240,11 +269,26 @@ const ICONS = {
 };
 
 const DEPTS = {
-  fever:{ label:'Fever, headache & body ache', dept:'General Medicine', deptUrdu:'جنرل میڈیسن', counter:'4', floor:'Ground Floor', urgent:false },
-  chest:{ label:'Chest pain / shortness of breath', dept:'Cardiology', deptUrdu:'امراض قلب', counter:'9', floor:'2nd Floor', urgent:true },
-  stomach:{ label:'Stomach ache & vomiting', dept:'Gastroenterology', deptUrdu:'معدہ و انتڑیاں', counter:'6', floor:'Ground Floor', urgent:false },
-  skin:{ label:'Skin rash / itching', dept:'Dermatology', deptUrdu:'جلدی امراض', counter:'12', floor:'3rd Floor', urgent:false },
-  preg:{ label:'Pregnancy checkup', dept:'Gynecology & Obstetrics', deptUrdu:'امراض نسواں', counter:'3', floor:'1st Floor', urgent:false }
+  fever:{ label:'Fever, headache & body ache', dept:'General Medicine', deptUrdu:'جنرل میڈیسن', counter:'4', floor:'Ground Floor', urgent:false,
+    kw:['fever','headache','body ache','flu','cold','weak','bukhar'] },
+  chest:{ label:'Chest pain / shortness of breath', dept:'Cardiology', deptUrdu:'امراض قلب', counter:'9', floor:'2nd Floor', urgent:true,
+    kw:['chest pain','breath','breathing','heart','chest'] },
+  stomach:{ label:'Stomach ache & vomiting', dept:'Gastroenterology', deptUrdu:'معدہ و انتڑیاں', counter:'6', floor:'Ground Floor', urgent:false,
+    kw:['stomach','vomit','nausea','abdomen','digestion','ulcer'] },
+  skin:{ label:'Skin rash / itching', dept:'Dermatology', deptUrdu:'جلدی امراض', counter:'12', floor:'3rd Floor', urgent:false,
+    kw:['skin','rash','itch','allergy','acne'] },
+  preg:{ label:'Pregnancy checkup', dept:'Gynecology & Obstetrics', deptUrdu:'امراض نسواں', counter:'3', floor:'1st Floor', urgent:false,
+    kw:['pregnant','pregnancy','gynae','women'] },
+  eye:{ label:'Eye pain / blurred vision', dept:'Ophthalmology', deptUrdu:'امراض چشم', counter:'15', floor:'3rd Floor', urgent:false,
+    kw:['eye','vision','blurred','sight'] },
+  bone:{ label:'Bone pain / injury / fracture', dept:'Orthopedics', deptUrdu:'امراض ہڈی', counter:'7', floor:'1st Floor', urgent:false,
+    kw:['bone','fracture','injury','joint','back pain','knee'] },
+  child:{ label:"Child unwell / vaccination", dept:'Pediatrics', deptUrdu:'اطفال', counter:'2', floor:'Ground Floor', urgent:false,
+    kw:['child','baby','vaccination','kids'] },
+  tooth:{ label:'Toothache / dental pain', dept:'Dentistry', deptUrdu:'امراض دندان', counter:'18', floor:'3rd Floor', urgent:false,
+    kw:['tooth','teeth','dental','gum'] },
+  ent:{ label:'Ear pain / throat infection', dept:'ENT (Ear, Nose & Throat)', deptUrdu:'کان، ناک، گلا', counter:'10', floor:'2nd Floor', urgent:false,
+    kw:['ear','throat','nose','sore throat'] }
 };
 
 const REPORTS = {
@@ -259,7 +303,18 @@ const REPORTS = {
   xray:{ title:'Chest X-Ray Report', lines:[
       {name:'Lung Fields', val:'Clear', tag:'ok'},
       {name:'Heart Size', val:'Normal', tag:'ok'}],
-    explain:'The written report describes your lungs and heart shadow as normal in size and appearance. This is a simple reading of the report\'s own text — only your doctor can confirm what it means for you.' }
+    explain:'The written report describes your lungs and heart shadow as normal in size and appearance. This is a simple reading of the report\'s own text — only your doctor can confirm what it means for you.' },
+  lft:{ title:'Liver Function Test (LFT)', lines:[
+      {name:'ALT (SGPT)', val:'52 U/L', tag:'watch'},
+      {name:'Bilirubin', val:'0.9 mg/dL', tag:'ok'}],
+    explain:'One liver enzyme is a little above the usual range, which can happen for several reasons and is not automatically serious. Your bilirubin, which relates to jaundice, is normal. Please discuss this reading with your doctor.' },
+  thyroid:{ title:'Thyroid (TSH) Test', lines:[
+      {name:'TSH', val:'5.8 mIU/L', tag:'watch'}],
+    explain:'Your TSH level is a bit higher than the typical range, which can be linked to how your thyroid gland is working. This alone does not confirm a diagnosis — your doctor will look at this alongside your symptoms.' },
+  urine:{ title:'Urine Routine Examination', lines:[
+      {name:'Pus Cells', val:'2-4 /HPF', tag:'ok'},
+      {name:'Protein', val:'Nil', tag:'ok'}],
+    explain:'Your urine test values are within the normal range, with no signs of infection or protein loss shown in this report.' }
 };
 
 const RX = {
@@ -269,6 +324,13 @@ const RX = {
   ],
   stomach:[
     {name:'Omeprazole 20mg', purpose:'Reduces stomach acid', dose:'1 capsule before breakfast, daily', caution:'Take on an empty stomach. Do not use long-term without a doctor\'s advice.'}
+  ],
+  skin:[
+    {name:'Cetirizine 10mg', purpose:'Relieves itching and allergy symptoms', dose:'1 tablet at night', caution:'May cause drowsiness — avoid driving after taking it.'},
+    {name:'Betnovate Cream', purpose:'Reduces skin inflammation and rash', dose:'Apply a thin layer twice daily on the affected area', caution:'Do not use on the face for more than 5 days without a doctor\'s advice.'}
+  ],
+  bp:[
+    {name:'Amlodipine 5mg', purpose:'Controls high blood pressure', dose:'1 tablet daily, same time each day', caution:'Do not stop suddenly without consulting your doctor.'}
   ]
 };
 
@@ -316,6 +378,7 @@ const SCREENS = {
         <div class="lang-card" onclick="go('menu')"><span class="native urdu">پنجابی</span><span class="rom">Punjabi</span></div>
         <div class="lang-card" onclick="go('menu')"><span class="native urdu">سندھی</span><span class="rom">Sindhi</span></div>
         <div class="lang-card" onclick="go('menu')"><span class="native urdu">پشتو</span><span class="rom">Pashto</span></div>
+        <div class="lang-card" onclick="go('menu')"><span class="native urdu">بلوچی</span><span class="rom">Balochi</span></div>
       </div>
     </div>
   `,
@@ -343,9 +406,13 @@ const SCREENS = {
   'symptom-pick': () => `
     ${topbar(true)}
     <div class="content">
-      <div class="mic-pulse">${ICONS.mic}</div>
-      <p class="lede" style="text-align:center;margin-top:14px;">Tap the mic and tell us what's wrong — or choose below</p>
-      <div class="chiprow">
+      <div class="mic-pulse" id="micBtn" onclick="startVoice()">${ICONS.mic}</div>
+      <p class="lede" id="micStatus" style="text-align:center;margin-top:14px;">Tap the mic and speak, type below, or choose a symptom</p>
+      <div class="type-row">
+        <input id="symptomInput" class="type-input" type="text" placeholder="Type your symptom here… e.g. fever, chest pain" onkeydown="if(event.key==='Enter')submitTyped()">
+        <button class="btn-type-go" onclick="submitTyped()">Go</button>
+      </div>
+      <div class="chiprow" style="margin-top:16px;">
         ${Object.entries(DEPTS).map(([k,v])=>`<div class="chip" onclick="pickSymptom('${k}')">${v.label}</div>`).join('')}
       </div>
     </div>
@@ -413,6 +480,8 @@ const SCREENS = {
       <div class="chiprow">
         <div class="chip" onclick="pickRx('fever')">Sample: Fever prescription</div>
         <div class="chip" onclick="pickRx('stomach')">Sample: Stomach prescription</div>
+        <div class="chip" onclick="pickRx('skin')">Sample: Skin allergy prescription</div>
+        <div class="chip" onclick="pickRx('bp')">Sample: Blood pressure prescription</div>
       </div>
     </div>
   `,
@@ -444,6 +513,102 @@ const SCREENS = {
 };
 
 function pickSymptom(key){ state.symptomKey = key; go('symptom-processing'); setTimeout(()=>go('department-result'), 1400); }
+
+// Matches free-text (typed or spoken) against known symptom keywords.
+// Deliberately does NOT guess between close matches or invent a department —
+// if nothing matches confidently, it says so rather than picking randomly.
+function matchSymptom(text){
+  if(!text) return null;
+  const t = text.toLowerCase();
+  for(const [key, v] of Object.entries(DEPTS)){
+    if(v.kw.some(k => t.includes(k))) return key;
+  }
+  return null;
+}
+
+function submitTyped(){
+  const input = document.getElementById('symptomInput');
+  const text = input ? input.value.trim() : '';
+  handleFreeText(text, 'typed');
+}
+
+function handleFreeText(text, source){
+  const match = matchSymptom(text);
+  if(match){
+    pickSymptom(match);
+  } else if(text){
+    const statusEl = document.getElementById('micStatus');
+    if(statusEl) statusEl.textContent = "We couldn't confidently match that — please choose a symptom below.";
+  }
+}
+
+// --- Voice input ---
+// Uses the browser's built-in speech recognition where available.
+// Designed to always release the UI back to the user: on any error, timeout,
+// no-match, or unsupported browser, it falls back to typing/tap-chips
+// instead of leaving the mic stuck in a "listening" state.
+let recognition = null;
+let voiceTimeout = null;
+
+function resetMicUI(msg){
+  const btn = document.getElementById('micBtn');
+  const status = document.getElementById('micStatus');
+  if(btn) btn.classList.remove('listening');
+  if(status) status.textContent = msg || "Tap the mic and speak, type below, or choose a symptom";
+  if(voiceTimeout){ clearTimeout(voiceTimeout); voiceTimeout = null; }
+}
+
+function startVoice(){
+  const btn = document.getElementById('micBtn');
+  const status = document.getElementById('micStatus');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if(!SR){
+    // Browser doesn't support it at all — don't block the patient, just
+    // point them to typing/tapping instead.
+    if(status) status.textContent = "Voice isn't available on this device — please type or tap a symptom below.";
+    return;
+  }
+
+  try{
+    if(btn) btn.classList.add('listening');
+    if(status) status.textContent = "Listening… speak your symptom now";
+
+    recognition = new SR();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    // Hard safety timeout: if nothing fires within 6s (mic denied, silence,
+    // a hung browser API), force the UI back to normal rather than staying
+    // stuck on "Listening…" forever.
+    voiceTimeout = setTimeout(()=>{
+      try{ recognition && recognition.stop(); }catch(e){}
+      resetMicUI("Didn't catch that in time — please try again or type below.");
+    }, 6000);
+
+    recognition.onresult = (e) => {
+      clearTimeout(voiceTimeout);
+      const text = e.results[0][0].transcript;
+      resetMicUI();
+      handleFreeText(text, 'voice');
+    };
+    recognition.onerror = () => {
+      resetMicUI("Couldn't hear that clearly — please try again or type below.");
+    };
+    recognition.onend = () => {
+      // Guards against the "listening" state getting stuck if onresult/onerror
+      // never fire for some reason.
+      if(voiceTimeout){ resetMicUI(); }
+    };
+
+    recognition.start();
+  }catch(err){
+    // Any unexpected failure (e.g. permission blocked) still returns
+    // control to the patient instead of freezing the screen.
+    resetMicUI("Voice input isn't working right now — please type or tap a symptom below.");
+  }
+}
 function pickReport(key){ state.reportKey = key; go('lab-processing'); setTimeout(()=>go('lab-result'), 1400); }
 function pickRx(key){ state.rxKey = key; go('rx-processing'); setTimeout(()=>go('rx-result'), 1400); }
 
